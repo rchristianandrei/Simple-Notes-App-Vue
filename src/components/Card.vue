@@ -1,9 +1,15 @@
 <script setup lang="ts">
 defineProps<{
+  id: number,
   title: string,
   content: string,
   date: Date
 }>()
+
+const emit = defineEmits<{
+  (event: "delete", value: number): void,
+}>()
+
 </script>
 
 <template>
@@ -13,7 +19,7 @@ defineProps<{
         <div class="group pi pi-ellipsis-v cursor-pointer rounded-full p-1 relative">
           <ul class="absolute right-0 bg-white text-black p-1 flex flex-col gap-2 rounded hidden group-hover:block">
             <li class="cursor-pointer hover:opacity-[.5]">Edit</li>
-            <li class="cursor-pointer hover:opacity-[.5]">Delete</li>
+            <li @click="emit('delete', id)" class="cursor-pointer hover:opacity-[.5]">Delete</li>
           </ul>
         </div>
       </div>

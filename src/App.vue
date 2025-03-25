@@ -18,6 +18,10 @@ const addNoteDialog = ref(false)
 function AddNoteCb(note: {title: string, content: string, date: Date}){
   notes.value.push(note)
 }
+
+function DeleteNote(key: number){
+  notes.value = notes.value.filter((v, i) => i !== key)
+}
 </script>
 
 <template>
@@ -27,7 +31,7 @@ function AddNoteCb(note: {title: string, content: string, date: Date}){
       <button @click="addNoteDialog = !addNoteDialog" class="cursor-pointer border bg-white w-13 h-13 rounded-full hover:opacity-[.75]"><span class="pi pi-plus"></span></button>
     </header>
     <main class="p-3 flex gap-1 flex-wrap">
-      <Card v-for="(note, index) in notes" :key="index" :title="note.title" :content="note.content" :date="note.date"></Card>
+      <Card v-for="(note, index) in notes" :key="index" @delete="DeleteNote" :id="index" :title="note.title" :content="note.content" :date="note.date"></Card>
     </main>
   </div>
 
