@@ -12,11 +12,19 @@ const notes = ref<{
   {title: "My Codes", content: "Sample content", date: new Date},
   {title: "Watch List", content: "Sample content", date: new Date},
   ])
-
 const addNoteDialog = ref(false)
+const updateNoteId = ref<number | null>(null);
 
 function AddNoteCb(note: {title: string, content: string, date: Date}){
   notes.value.push(note)
+}
+
+function UpdateNote(note: {title: string, content: string, date: Date}){
+  if (!updateNoteId.value) return;
+  const selectedNote = notes.value[updateNoteId.value]
+  selectedNote.title = note.title
+  selectedNote.content = note.content
+  updateNoteId.value = null
 }
 
 function DeleteNote(key: number){
@@ -31,11 +39,11 @@ function DeleteNote(key: number){
       <button @click="addNoteDialog = !addNoteDialog" class="cursor-pointer border bg-white w-13 h-13 rounded-full hover:opacity-[.75]"><span class="pi pi-plus"></span></button>
     </header>
     <main class="p-3 flex gap-1 flex-wrap">
-      <Card v-for="(note, index) in notes" :key="index" @delete="DeleteNote" :id="index" :title="note.title" :content="note.content" :date="note.date"></Card>
+      <Card v-for="(note, index) in notes" :key="index" @edit="() => {addNoteDialog = true; updateNoteId = index}" @delete="DeleteNote" :id="index" :title="note.title" :content="note.content" :date="note.date"></Card>
     </main>
   </div>
 
-  <AddNote v-if="addNoteDialog" @add="AddNoteCb" @close="addNoteDialog = false"></AddNote>
+  <AddNote v-if="addNoteDialog" :note="updateNoteId ? {id: updateNoteId, ...notes[updateNoteId]}: undefined" @add="AddNoteCb" @update="UpdateNote" @close="addNoteDialog = false"></AddNote>
 </template>
 
 <style scoped>

@@ -1,15 +1,39 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
+
+const props = withDefaults(defineProps<{
+    note?: {
+        id: number,
+        title: string, 
+        content: string,
+        date: Date
+    }
+}>(), {
+    note: () => ({
+        id: -1,
+        title: "", 
+        content:"",
+        date: new Date
+    })
+});
+
+const isUpdate = computed(() => {
+    return props.note.id >= 0
+})
 
 const emit = defineEmits<{
     (event: "add", value: {title: string, content: string, date: Date}): void
+    (event: "update", value: {title: string, content: string, date: Date}): void
     (event: "close"): void
 }>()
 
-const note = reactive({title: "", content:""})
-
 function addNote(){
-    emit("add", {title: note.title, content: note.content, date: new Date})
+    if (isUpdate){
+        emit("update", props.note)
+    }
+    else{
+        emit("add", props.note)
+    }
     emit("close")
 }
 </script>
@@ -32,7 +56,7 @@ function addNote(){
                 <label for="">Content</label>
                 <input v-model.trim="note.content" type="text" placeholder="Content.." class="border rounded p-2">
             </div>
-            <button type="submit" class="cursor-pointer bg-blue-300 w-[100%] rounded p-2 font-semibold">Add</button>
+            <button type="submit" class="cursor-pointer bg-blue-300 w-[100%] rounded p-2 font-semibold">{{isUpdate ? "Update" : "Add"}}</button>
         </form>
     </div>
 </template>
