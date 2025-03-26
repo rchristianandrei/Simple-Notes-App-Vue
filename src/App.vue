@@ -21,9 +21,7 @@ function AddNoteCb(note: {title: string, content: string, date: Date}){
 
 function UpdateNote(note: {title: string, content: string, date: Date}){
   if (!updateNoteId.value) return;
-  const selectedNote = notes.value[updateNoteId.value]
-  selectedNote.title = note.title
-  selectedNote.content = note.content
+  notes.value[updateNoteId.value] = note
   updateNoteId.value = null
 }
 
